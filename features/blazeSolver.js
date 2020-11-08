@@ -1,5 +1,5 @@
+import { settings } from "../settings";
 import { drawBox } from "./betterGlowingEffect";
-
 
 class BlazeSolver {
     constructor() {
@@ -9,6 +9,14 @@ class BlazeSolver {
 
     renderWorld(partialTicks) {
         let blazes = {};
+        let inCatacombs = false;
+
+        Scoreboard.getLines().forEach(line => {
+            line = ChatLib.removeFormatting(line.toString());
+            if (line.includes("The Catac")) {
+                inCatacombs = true;
+            }
+        });
 
         World.getAllEntities().forEach(entity => {
             if (entity.getName().includes("Blaze ")) {
@@ -23,6 +31,8 @@ class BlazeSolver {
         });
 
         if (Math.min.apply(Math, Object.keys(blazes)) === Infinity) return;
+
+        if (!inCatacombs) return;
 
         let smallest = Math.min.apply(Math, Object.keys(blazes));
         smallest = blazes[smallest];
